@@ -11,7 +11,7 @@ import type { CancelablePromise } from '../core/CancelablePromise'
 import type { BaseHttpRequest } from '../core/BaseHttpRequest'
 
 export class UsersService {
-  constructor(public readonly httpRequest: BaseHttpRequest) {}
+  constructor(public readonly httpRequest: BaseHttpRequest) { }
 
   /**
    * @param requestBody
@@ -96,4 +96,21 @@ export class UsersService {
       mediaType: 'application/json'
     })
   }
+
+  public getTemperatureHumidity(): CancelablePromise<void> {
+    return this.httpRequest.request({
+      method: 'GET',
+      url: '/api/users/temperature-humidity/',
+      mediaType: 'application/json'
+    })
+  }
+
+  public getVideoStreamUrl(): CancelablePromise<string> {
+    return this.httpRequest.request({
+      method: 'GET',
+      url: '/api/users/video-stream/',
+    });
+  }
+
+
 }
