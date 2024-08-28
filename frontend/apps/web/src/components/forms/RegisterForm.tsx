@@ -22,7 +22,7 @@ const RegisterForm: React.FC<{
   return (
     <>
       <FormHeader
-        title="Create new account in Turbo"
+        title="Create new account in Phobaobao"
         description="Get an access to internal application"
       />
 
@@ -37,6 +37,8 @@ const RegisterForm: React.FC<{
             fieldApiError('username', 'username', res, setError)
             fieldApiError('password', 'password', res, setError)
             fieldApiError('password_retype', 'passwordRetype', res, setError)
+            fieldApiError('first_name', 'firstName', res, setError)
+            fieldApiError('last_name', 'lastName', res, setError)
           }
         })}
       >
@@ -64,6 +66,19 @@ const RegisterForm: React.FC<{
           placeholder="Verify password"
         />
 
+        <TextField
+          type="text"
+          register={register('firstName')}
+          label="First name"
+          formState={formState}
+        />
+
+        <TextField
+          type="text"
+          register={register('lastName')}
+          label="Last name"
+          formState={formState}
+        />
         <SubmitField>Sign up</SubmitField>
       </form>
 

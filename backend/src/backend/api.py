@@ -4,6 +4,14 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+import socket
+import cv2
+import numpy as np
+import threading
+from django.http import StreamingHttpResponse
+import struct
+import time
+
 
 from .serializers import (
     UserChangePasswordErrorSerializer,
@@ -16,6 +24,45 @@ from .serializers import (
 
 User = get_user_model()
 
+def video_stream_generator():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect(('host.docker.internal', 44100))  
+        while True:
+            header = s.recv(12)
+            if not header:
+                break
+
+            _, _, data_len = struct.unpack('f f i', header)
+            
+            if data_len <= 0:
+                continue
+
+            string_data = s.recv(data_len)
+            # frame
+            data = np.frombuffer(string_data, dtype='uint8')
+            frame = cv2.imdecode(data, cv2.IMREAD_COLOR)
+            
+            if frame is not None:
+                # cv2.imshow('Received Frame', frame)
+                # if cv2.waitKey(1) & 0xFF == ord('q'):
+                #     break
+                _, jpeg = cv2.imencode('.jpg', frame)
+                frame = jpeg.tobytes()
+
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+                time.sleep(0.1)  # FPS
+                
+def get_temperature_humidity():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect(('host.docker.internal', 44100))
+        header = s.recv(12)
+        if not header:
+            return None
+
+        temperature, humidity, _ = struct.unpack('f f i', header)
+        return temperature, humidity
 
 class UserViewSet(
     mixins.CreateModelMixin,
@@ -23,7 +70,8 @@ class UserViewSet(
 ):
     queryset = User.objects.all()
     serializer_class = UserCurrentSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return self.queryset.filter(pk=self.request.user.pk)
@@ -99,3 +147,32 @@ class UserViewSet(
     def delete_account(self, request, *args, **kwargs):
         self.request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=False, methods=["get"], url_path="video-stream")
+    def video_stream(self, request, *args, **kwargs):
+        response = StreamingHttpResponse(video_stream_generator(), content_type='multipart/x-mixed-replace; boundary=frame')
+        response['Cache-Control'] = 'no-cache'
+        # response['Connection'] = 'keep-alive'
+        # print(response)
+        return response
+    
+    @action(detail=False, methods=["get"], url_path="temperature-humidity")
+    def temperature_humidity(self, request, *args, **kwargs):
+        data = get_temperature_humidity()
+        
+        if data:
+            temperature, humidity = data
+            
+            ## get state
+            
+            state = 'hungry'
+            
+            return Response({
+                'temperature': temperature,
+                'humidity': humidity,
+                'state': state
+            })
+        else:
+            return Response({
+                'error': 'Could not retrieve sensor data'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
