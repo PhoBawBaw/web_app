@@ -41,9 +41,11 @@
    git clone https://github.com/username/repository.git
    cd repository
 
-2. Docker Compose를 사용하여 애플리케이션을 실행합니다.
+2. Config 파일들을 설정한 후 Docker Compose를 사용하여 애플리케이션을 실행합니다.
 
     ```bash
+    cp .env.backend.template .env.backend # set SECRET_KEY and DEBUG=1 for debug mode on
+    cp .env.frontend.template .env.frontend # set NEXTAUTH_SECRET to a value "openssl rand -base64 32"
     docker-compose up
     ```
 
