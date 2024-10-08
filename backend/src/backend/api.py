@@ -8,9 +8,11 @@ import socket
 import cv2
 import numpy as np
 import threading
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, FileResponse, HttpResponse
 import struct
 import time
+import os 
+from rest_framework.views import APIView
 
 
 from .serializers import (
@@ -24,45 +26,17 @@ from .serializers import (
 
 User = get_user_model()
 
-def video_stream_generator():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect(('host.docker.internal', 44100))  
-        while True:
-            header = s.recv(12)
-            if not header:
-                break
+# def get_temperature_humidity():
+#     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+#         s.connect(('host.docker.internal', 44100))
+#         header = s.recv(12)
+#         if not header:
+#             return None
 
-            _, _, data_len = struct.unpack('f f i', header)
-            
-            if data_len <= 0:
-                continue
+#         temperature, humidity, _ = struct.unpack('f f i', header)
+#         return temperature, humidity
 
-            string_data = s.recv(data_len)
-            # frame
-            data = np.frombuffer(string_data, dtype='uint8')
-            frame = cv2.imdecode(data, cv2.IMREAD_COLOR)
-            
-            if frame is not None:
-                # cv2.imshow('Received Frame', frame)
-                # if cv2.waitKey(1) & 0xFF == ord('q'):
-                #     break
-                _, jpeg = cv2.imencode('.jpg', frame)
-                frame = jpeg.tobytes()
-
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-                time.sleep(0.1)  # FPS
-                
-def get_temperature_humidity():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect(('host.docker.internal', 44100))
-        header = s.recv(12)
-        if not header:
-            return None
-
-        temperature, humidity, _ = struct.unpack('f f i', header)
-        return temperature, humidity
+HLS_OUTPUT_PATH = '/app/stream'
 
 class UserViewSet(
     mixins.CreateModelMixin,
@@ -148,23 +122,17 @@ class UserViewSet(
         self.request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    @action(detail=False, methods=["get"], url_path="video-stream")
-    def video_stream(self, request, *args, **kwargs):
-        response = StreamingHttpResponse(video_stream_generator(), content_type='multipart/x-mixed-replace; boundary=frame')
-        response['Cache-Control'] = 'no-cache'
-        # response['Connection'] = 'keep-alive'
-        # print(response)
-        return response
-    
     @action(detail=False, methods=["get"], url_path="temperature-humidity")
     def temperature_humidity(self, request, *args, **kwargs):
-        data = get_temperature_humidity()
-        
-        if data:
-            temperature, humidity = data
+        # data = get_temperature_humidity()
+        temperature = 30
+        humidity = 40
+
+        # if data:
+            # temperature, humidity = data
             
             ## get state
-            
+        try:   
             state = 'hungry'
             
             return Response({
@@ -172,7 +140,29 @@ class UserViewSet(
                 'humidity': humidity,
                 'state': state
             })
-        else:
+        except:
             return Response({
                 'error': 'Could not retrieve sensor data'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=False, methods=["get"], url_path='stream/stream.m3u8')
+    def stream_m3u8(self, request, *args, **kwargs):
+        """
+        stream.m3u8 파일 제공
+        """
+        file_path = os.path.join(HLS_OUTPUT_PATH, 'stream.m3u8')
+
+        if not os.path.exists(file_path):
+            return HttpResponse('File not found', status=404)
+        return FileResponse(open(file_path, 'rb'), content_type='application/vnd.apple.mpegurl')
+
+    # TS 세그먼트 파일 제공
+    @action(detail=False, methods=["get"], url_path=r'stream/stream.m3u8/(?P<filename>[^/]+\.ts)')
+    def stream_ts(self, request, filename, *args, **kwargs):
+        """
+        TS 세그먼트 파일 제공
+        """
+        file_path = os.path.join(HLS_OUTPUT_PATH, filename)
+        if not os.path.exists(file_path):
+            return HttpResponse('File not found', status=404)
+        return FileResponse(open(file_path, 'rb'), content_type='video/mp2t')

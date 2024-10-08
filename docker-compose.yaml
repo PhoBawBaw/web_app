@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:16
     expose:
       - "5432"
     ports:
@@ -20,9 +20,9 @@ services:
     build:
       context: backend
     expose:
-      - "8000"
+      - "58000"
     ports:
-      - "8000:8000"
+      - "58000:8000"
     volumes:
       - ./backend:/app
     env_file:

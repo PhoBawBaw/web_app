@@ -1,9 +1,9 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
-import { getSensorData } from '@/actions/getTempHum'
+import { useEffect, useState, useRef } from 'react'
 import { signIn, signOut } from 'next-auth/react'
+import Hls from 'hls.js'
 
 const SignOutLink: React.FC = () => {
   return (
@@ -22,29 +22,64 @@ const UserSession: React.FC = () => {
   const [temperature, setTemperature] = useState<string | null>(null)
   const [humidity, setHumidity] = useState<string | null>(null)
   const [state, setState] = useState<string | null>(null)
-  const [loadingStream, setLoadingStream] = useState<boolean>(true)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
 
+  // Fetch temperature and humidity data
   useEffect(() => {
     if (status === 'unauthenticated') {
-      // Redirect to the sign-in page if not authenticated
-      signIn()
+      signIn() // Redirect to the sign-in page if unauthenticated
     }
 
     if (status === 'authenticated') {
       const fetchSensorData = async () => {
-        const data = await getSensorData()
-        setTemperature(data.temperature)
-        setHumidity(data.humidity)
-        setState(data.state)
-      }
+        try {
+          const response = await fetch('http://<ip address>:58000/api/users/temperature-humidity/');
+          const data = await response.json();
 
-      fetchSensorData()
+          if (response.ok) {
+            setTemperature(data.temperature);
+            setHumidity(data.humidity);
+            setState(data.state);
+          } else {
+            console.error('Failed to fetch sensor data:', data);
+          }
+        } catch (error) {
+          console.error('Error fetching sensor data:', error);
+        }
+      };
 
-      const intervalId = setInterval(fetchSensorData, 5000)
+      fetchSensorData(); // Fetch data once on load
 
-      return () => clearInterval(intervalId)
+      const intervalId = setInterval(fetchSensorData, 5000); // Poll every 5 seconds
+      return () => clearInterval(intervalId); // Cleanup interval on unmount
     }
-  }, [status])
+  }, [status]);
+
+  // HLS video streaming setup
+  useEffect(() => {
+    if (status === 'authenticated' && videoRef.current) {
+      const video = videoRef.current;
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource('http://<ip address>:58000/api/users/stream/stream.m3u8'); // m3u8 URL 수정
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play();
+        });
+
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          console.error('HLS error:', data);
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // For Safari or native HLS support
+        video.src = 'http://<ip address>:58000/api/users/stream/stream.m3u8';
+        video.addEventListener('loadedmetadata', () => {
+          video.play();
+        });
+      }
+    }
+  }, [status]);
 
   return (
     <div className="relative">
@@ -52,26 +87,29 @@ const UserSession: React.FC = () => {
         <div className="mt-8">
           <figure className="h-auto max-w-lg mx-auto relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0">
             <a href="#">
-              <img
-                src="http://localhost:8000/api/users/video-stream/"
-                alt="Video Stream"
-                className="h-auto max-w-lg mx-auto max-w-full transition-all duration-300 rounded-lg cursor-pointer filter grayscale hover:grayscale-0"
-                onLoad={() => setLoadingStream(false)}
-                onError={() => console.error('Failed to load video stream')}
+              <video
+                ref={videoRef}
+                id="video"
+                width="640"
+                height="480"
+                controls
+                autoplay="autoplay"
+                muted="muted"
+                className="rounded-lg"
               />
             </a>
             <figcaption className="absolute px-4 text-lg text-white bottom-6">
               <p>
                 Temperature:{' '}
                 <span className="font-bold">
-                  {temperature ? temperature.toFixed(2) : 'Loading...'}
+                  {temperature ? parseFloat(temperature).toFixed(2) : 'Loading...'}
                 </span>
                 °C
               </p>
               <p>
                 Humidity:{' '}
                 <span className="font-bold">
-                  {humidity ? humidity.toFixed(2) : 'Loading...'}
+                  {humidity ? parseFloat(humidity).toFixed(2) : 'Loading...'}
                 </span>
                 %
               </p>
@@ -79,20 +117,11 @@ const UserSession: React.FC = () => {
                 BabyState:{' '}
                 <span className="font-bold">{state || 'Loading...'}</span>
               </p>
-              {/* <p>
-                Temperature:{' '}
-                <span className="font-bold">{temperature || 'Loading...'}</span>°C
-              </p>
-              <p>
-                Humidity:{' '}
-                <span className="font-bold">{humidity || 'Loading...'}</span>%
-              </p>
-              <p>
-                BabyState:{' '}
-                <span className="font-bold">{state || 'Loading...'}</span>
-              </p> */}
             </figcaption>
           </figure>
+          <div className="mt-4 text-center">
+            <SignOutLink />
+          </div>
         </div>
       )}
     </div>
