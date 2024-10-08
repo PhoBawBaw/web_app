@@ -6,4 +6,6 @@ RUN npm install -g pnpm
 
 WORKDIR /app
 
+RUN pnpm add hls.js
+
 EXPOSE 3000

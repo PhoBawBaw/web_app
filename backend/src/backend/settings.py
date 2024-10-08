@@ -1,5 +1,6 @@
 from os import environ
 from pathlib import Path
+import os
 
 from django.core.management.utils import get_random_secret_key
 from django.urls import reverse_lazy
@@ -14,7 +15,7 @@ SECRET_KEY = environ.get("SECRET_KEY", get_random_secret_key())
 
 DEBUG = environ.get("DEBUG", "") == "1"
 
-ALLOWED_HOSTS = ["localhost", "api","0.0.0.0"]
+ALLOWED_HOSTS = ["*"]
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
@@ -22,6 +23,11 @@ ROOT_URLCONF = "backend.urls"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+APPEND_SLASH = True
+
+MEDIA_URL = '/media/'  
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'stream') 
 ######################################################################
 # Apps
 ######################################################################
@@ -54,9 +60,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "*",
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
+
 ######################################################################
 # Templates
 ######################################################################

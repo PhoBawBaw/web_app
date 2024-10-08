@@ -14,6 +14,6 @@ RUN poetry config virtualenvs.create false
 
 RUN poetry install --no-root
 
-RUN apt-get update && apt-get install -y libgl1-mesa-glx
+RUN apt-get update && apt-get install -y libgl1-mesa-glx && apt-get install -y ffmpeg vim
 
-EXPOSE 8000
+EXPOSE 58000
