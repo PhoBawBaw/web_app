@@ -109,7 +109,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             user = User.objects.create_user(**validated_data)
 
             # By default newly registered accounts are inactive.
-            user.is_active = False
+            user.is_active = True
             user.save(update_fields=["is_active"])
 
         return user

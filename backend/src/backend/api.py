@@ -13,8 +13,9 @@ import struct
 import time
 import os 
 from rest_framework.views import APIView
-
-
+from django.http import HttpResponse, FileResponse
+from django.conf import settings
+from .models import EnvironmentData, StatusData
 from .serializers import (
     UserChangePasswordErrorSerializer,
     UserChangePasswordSerializer,
@@ -23,20 +24,14 @@ from .serializers import (
     UserCurrentErrorSerializer,
     UserCurrentSerializer,
 )
+from django.http import JsonResponse
+
 
 User = get_user_model()
 
-# def get_temperature_humidity():
-#     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-#         s.connect(('host.docker.internal', 44100))
-#         header = s.recv(12)
-#         if not header:
-#             return None
-
-#         temperature, humidity, _ = struct.unpack('f f i', header)
-#         return temperature, humidity
 
 HLS_OUTPUT_PATH = '/app/stream'
+HLS_STORE_OUTPUT_PATH = '/app/record'
 
 class UserViewSet(
     mixins.CreateModelMixin,
@@ -58,6 +53,7 @@ class UserViewSet(
 
     def get_serializer_class(self):
         if self.action == "create":
+            print('create action')
             return UserCreateSerializer
         elif self.action == "me":
             return UserCurrentSerializer
@@ -122,23 +118,35 @@ class UserViewSet(
         self.request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+    @action(detail=False, methods=["get"], url_path="baby-crying-status")
+    def status(self, request, *args, **kwargs):
+        latest_data = StatusData.objects.order_by('-datetime').first()
+        
+        datetime = latest_data.datetime 
+        status = latest_data.crying
+        
+        try:   
+            return Response({
+                'time': datetime,
+                'state': status
+            })
+        except:
+            return Response({
+                'error': 'Could not retrieve sensor data'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
     @action(detail=False, methods=["get"], url_path="temperature-humidity")
     def temperature_humidity(self, request, *args, **kwargs):
-        # data = get_temperature_humidity()
-        temperature = 30
-        humidity = 40
+        latest_data = EnvironmentData.objects.order_by('-datetime').first()
 
-        # if data:
-            # temperature, humidity = data
-            
-            ## get state
+        temperature = latest_data.temperature
+        humidity = latest_data.humidity
         try:   
-            state = 'hungry'
+            # state get
             
             return Response({
                 'temperature': temperature,
                 'humidity': humidity,
-                'state': state
             })
         except:
             return Response({
@@ -147,22 +155,31 @@ class UserViewSet(
     
     @action(detail=False, methods=["get"], url_path='stream/stream.m3u8')
     def stream_m3u8(self, request, *args, **kwargs):
-        """
-        stream.m3u8 파일 제공
-        """
         file_path = os.path.join(HLS_OUTPUT_PATH, 'stream.m3u8')
 
         if not os.path.exists(file_path):
-            return HttpResponse('File not found', status=404)
-        return FileResponse(open(file_path, 'rb'), content_type='application/vnd.apple.mpegurl')
+            response = HttpResponse('File not found', status=404)
+        else:
+            response = FileResponse(open(file_path, 'rb'), content_type='application/vnd.apple.mpegurl')
 
-    # TS 세그먼트 파일 제공
+        return response
+
     @action(detail=False, methods=["get"], url_path=r'stream/stream.m3u8/(?P<filename>[^/]+\.ts)')
     def stream_ts(self, request, filename, *args, **kwargs):
-        """
-        TS 세그먼트 파일 제공
-        """
         file_path = os.path.join(HLS_OUTPUT_PATH, filename)
         if not os.path.exists(file_path):
-            return HttpResponse('File not found', status=404)
-        return FileResponse(open(file_path, 'rb'), content_type='video/mp2t')
+            response = HttpResponse('File not found', status=404)
+        else:
+            response = FileResponse(open(file_path, 'rb'), content_type='video/mp2t')
+
+        return response
+    
+    @action(detail=False, methods=["get"], url_path='stream-store')
+    def stream_store(self, request, *args, **kwargs):
+        try:
+            videos = [f for f in os.listdir(HLS_STORE_OUTPUT_PATH) if f.endswith('.mp4')]
+            video_urls = [request.build_absolute_uri(f'/media/record/{video}') for video in videos]
+
+            return JsonResponse({"videos": video_urls}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
