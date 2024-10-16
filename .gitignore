@@ -177,3 +177,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .ruff_cache
+
+backend/record
+backend/audio
+backend/stream
