@@ -31,11 +31,20 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-      <FormHeader
+      <h4 className="text-3xl font-semibold tracking-tight text-gray-900" style={{ textAlign: 'center'}}>
+        Welcome back to PhoBaoBao
+      </h4>
+      <p className="mb-12 mt-2 max-w-4xl text-base leading-relaxed text-gray-600" style={{ textAlign: 'center', margin: '0 auto'}}>
+        Get an access to internal application
+      </p>
+
+      {/* <h3 style={{ textAlign: 'center', margin: '0 auto' }}>Welcome back to PhoBaoBao</h3> */}
+      {/* <p }>Get an access to internal application</p> */}
+      {/* <FormHeader
         title="Welcome back to PhoBaoBao"
         description="Get an access to internal application"
-      />
-
+        className="form-header"
+      /> */}
       {search.has('error') && search.get('error') === 'CredentialsSignin' && (
         <ErrorMessage>Provided account does not exists.</ErrorMessage>
       )}
@@ -61,7 +70,8 @@ const LoginForm: React.FC = () => {
           placeholder="Enter your password"
         />
 
-        <SubmitField>Sign in</SubmitField>
+        <SubmitField className="btn btn-primary">Sign in</SubmitField>
+
       </form>
 
       <FormFooter

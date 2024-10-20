@@ -40,3 +40,13 @@ video::-webkit-media-controls-time-remaining-display {
 .show-controls::-webkit-media-controls-time-remaining-display {
     display: block !important;
 }
+form {
+    margin: auto;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
