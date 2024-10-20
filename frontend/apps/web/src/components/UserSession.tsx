@@ -85,7 +85,7 @@ const UserSession: React.FC = () => {
 
       {status === 'authenticated' && (
         <div className="grid-rows-2 gap-4">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="bg-white p-2 rounded-lg shadow-lg text-center">
               <h3 className="text-sm font-medium text-gray-500">습도</h3>
               <p className="text-2xl font-bold text-gray-900">{humidity ? parseFloat(humidity).toFixed(2) : 'Loading...'}</p>
@@ -103,10 +103,6 @@ const UserSession: React.FC = () => {
             <div className="bg-white p-2 rounded-lg shadow-lg text-center">
               <h3 className="text-sm font-medium text-gray-500">울음 상태</h3>
               <p className="text-2xl font-bold text-gray-900">{state === 'Don’t_know' ? 'Idle' : state || 'Loading...'}</p>
-            </div>
-            <div className="bg-white p-2 rounded-lg shadow-lg text-center">
-              <h3 className="text-sm font-medium text-gray-500">동작 상태</h3>
-              <p className="text-2xl font-bold text-gray-900">{move_state === 'Don’t_know' ? 'Idle' : move_state || 'Loading...'}</p>
             </div>
           </div>
 
