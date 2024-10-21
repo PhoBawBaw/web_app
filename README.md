@@ -26,11 +26,11 @@
 
 3. 프론트엔드 서버에 접속합니다:
 
-    URL: http://<IP ADDR>:3000
+    URL: http://\<IP ADDR>\:3000
 
 4. 백엔드 API 문서(Swagger)에 접속합니다:
 
-    URL: http://<IP ADDR>:58000/api/schema/swagger-ui/
+    URL: http://\<IP ADDR>\:58000/api/schema/swagger-ui/
 
 ## 인증
 
