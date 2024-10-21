@@ -32,11 +32,6 @@
 
     URL: http://localhost:8000/api/schema/swagger-ui/
 
-## 주요 기능
-  - 백엔드: Django와 DRF를 사용하여 API를 제공하며, PostgreSQL을 데이터베이스로 사용합니다.
-  - 프론트엔드: Next.js와 React(TypeScript)를 사용하여 SPA(Single Page Application)를 구현합니다.
-  - API 문서화: Swagger를 통해 API 문서를 자동 생성하여 제공합니다.
-
 ## 라이센스
   이 프로젝트는 MIT 라이센스를 따릅니다. 자세한 내용은 LICENSE 파일을 참조하세요.
 
