@@ -14,7 +14,7 @@
 
    ```bash
    git clone https://github.com/PhoBawBaw/web_app.git
-   cd repository
+   cd web_app
 
 2. Config 파일들을 설정한 후 Docker Compose를 사용하여 애플리케이션을 실행합니다.
 
@@ -26,11 +26,11 @@
 
 3. 프론트엔드 서버에 접속합니다:
 
-    URL: http://localhost:3000
+    URL: http://<IP ADDR>:3000
 
 4. 백엔드 API 문서(Swagger)에 접속합니다:
 
-    URL: http://localhost:8000/api/schema/swagger-ui/
+    URL: http://<IP ADDR>:58000/api/schema/swagger-ui/
 
 ## 인증
 
