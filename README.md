@@ -13,7 +13,7 @@
 1. 리포지토리를 클론합니다.
 
    ```bash
-   git clone https://github.com/username/repository.git
+   git clone https://github.com/PhoBawBaw/web_app.git
    cd repository
 
 2. Config 파일들을 설정한 후 Docker Compose를 사용하여 애플리케이션을 실행합니다.
