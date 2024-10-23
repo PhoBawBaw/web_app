@@ -4,10 +4,17 @@
 
 html,
 body {
-    height: 100%;
     margin: 0;
     padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #22c7a9;
+    /* Background color */
+    background-size: cover;
+    /* Ensures background covers the full area */
+    /* background-position: left; */
 }
+
 
 video::-webkit-media-controls-play-button {
     display: none !important;
@@ -40,6 +47,7 @@ video::-webkit-media-controls-time-remaining-display {
 .show-controls::-webkit-media-controls-time-remaining-display {
     display: block !important;
 }
+
 form {
     margin: auto;
     max-width: 400px;
@@ -49,4 +57,576 @@ form {
 .form-header {
     text-align: center;
     margin-bottom: 20px;
+}
+
+.home {
+    background-color: #f3f3f3;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.home .div-2 {
+    background-color: #f3f3f3;
+    height: 885px;
+    overflow: hidden;
+    position: relative;
+    width: 439px;
+}
+
+.home .ios-status-bar-black {
+    height: 49px;
+    left: 0;
+    position: absolute;
+    top: 11px;
+    width: 428px;
+}
+
+.home .right-side {
+    height: 11px;
+    left: 347px;
+    position: absolute;
+    top: 17px;
+    width: 67px;
+}
+
+.home .battery {
+    height: 11px;
+    left: 42px;
+    position: absolute;
+    top: 0;
+    width: 24px;
+}
+
+.home .wifi {
+    height: 11px;
+    left: 22px;
+    position: absolute;
+    top: 0;
+    width: 15px;
+}
+
+.home .mobile-signal {
+    height: 11px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 17px;
+}
+
+.home .left-side {
+    height: 11px;
+    left: 33px;
+    position: absolute;
+    top: 17px;
+    width: 28px;
+}
+
+.home .group {
+    height: 22px;
+    left: 359px;
+    position: absolute;
+    top: 80px;
+    width: 47px;
+}
+
+.home .text-wrapper {
+    color: #000000b2;
+    font-family: "Poppins", Helvetica;
+    font-size: 24px;
+    font-weight: 600;
+    left: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 76px;
+    white-space: nowrap;
+    width: 138px;
+}
+
+.home .text-wrapper-2 {
+    color: #000000b2;
+    font-family: "Poppins", Helvetica;
+    font-size: 24px;
+    font-weight: 600;
+    left: 108px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 177px;
+    white-space: nowrap;
+    width: 156px;
+}
+
+.home .p {
+    color: #45474578;
+    font-family: "Poppins", Helvetica;
+    font-size: 13px;
+    font-weight: 600;
+    left: 6px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 118px;
+    width: 217px;
+}
+
+.home .rectangle {
+    background-color: #0f0e0e;
+    height: 281px;
+    left: 30px;
+    position: absolute;
+    top: 243px;
+    width: 376px;
+}
+
+.home .baby-boy-wrapper {
+    background-color: #5eb9ad;
+    border-radius: 30px;
+    height: 60px;
+    left: 31px;
+    position: absolute;
+    top: 166px;
+    width: 60px;
+}
+
+.home .baby-boy {
+    height: 56px;
+    left: 2px;
+    object-fit: cover;
+    position: absolute;
+    top: 4px;
+    width: 56px;
+}
+
+.home .overlap-group {
+    background-color: #22c7a9;
+    border-radius: 10px 10px 50px 50px;
+    height: 59px;
+    left: -11px;
+    position: absolute;
+    top: 826px;
+    width: 462px;
+}
+
+.home .img {
+    height: 33px;
+    left: 212px;
+    position: absolute;
+    top: 19px;
+    width: 33px;
+}
+
+.home .vector {
+    height: 35px;
+    left: 109px;
+    position: absolute;
+    top: 18px;
+    width: 35px;
+}
+
+.home .bar-chart {
+    height: 38px;
+    left: 298px;
+    position: absolute;
+    top: 14px;
+    width: 35px;
+}
+
+.home .add-to-cart {
+    height: 74px;
+    left: 22px;
+    position: absolute;
+    top: 563px;
+    width: 194px;
+}
+
+.home .add-to-cart-2 {
+    height: 133px;
+    left: 227px;
+    position: absolute;
+    top: 653px;
+    width: 194px;
+}
+
+.home .add-to-cart-3 {
+    height: 133px;
+    left: 22px;
+    position: absolute;
+    top: 653px;
+    width: 194px;
+}
+
+.home .add-to-cart-4 {
+    height: 74px;
+    left: 227px;
+    position: absolute;
+    top: 563px;
+    width: 194px;
+}
+
+.start-screen {
+    background-color: #22c7a9;
+    border-radius: 50px;
+    height: 885px;
+    overflow: hidden;
+    position: relative;
+    width: 439px;
+}
+
+.start-screen .overlap-4 {
+    height: 101px;
+    left: 96px;
+    position: absolute;
+    top: 540px;
+    width: 299px;
+}
+
+.start-screen .text-wrapper-7 {
+    color: #ffffff;
+    font-family: "Poppins-ExtraBold", Helvetica;
+    font-size: 33px;
+    font-weight: 800;
+    left: 0;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 0;
+    width: 299px;
+}
+
+.start-screen .order-your-favorite {
+    color: #ffffff;
+    font-family: "Poppins-Light", Helvetica;
+    font-size: 14px;
+    font-weight: 300;
+    left: 40px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 54px;
+    width: 177px;
+}
+
+.start-screen .ios-status-bar-black-3 {
+    height: 49px;
+    left: 0;
+    position: absolute;
+    top: 11px;
+    width: 428px;
+}
+
+.start-screen .right-side-3 {
+    height: 11px;
+    left: 347px;
+    position: absolute;
+    top: 17px;
+    width: 67px;
+}
+
+.start-screen .battery-3 {
+    height: 11px;
+    left: 42px;
+    position: absolute;
+    top: 0;
+    width: 24px;
+}
+
+.start-screen .wifi-3 {
+    height: 11px;
+    left: 22px;
+    position: absolute;
+    top: 0;
+    width: 15px;
+}
+
+.start-screen .mobile-signal-3 {
+    height: 11px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 17px;
+}
+
+.start-screen .left-side-3 {
+    height: 11px;
+    left: 33px;
+    position: absolute;
+    top: 17px;
+    width: 28px;
+}
+
+.start-screen .overlap-group-3 {
+    background-color: #d9d9d9;
+    border-radius: 15px;
+    box-shadow: 0px 2px 1px #0000001f;
+    height: 65px;
+    left: 41px;
+    position: absolute;
+    top: 721px;
+    width: 359px;
+}
+
+.start-screen .div-wrapper {
+    background-color: #2db6a3;
+    border-radius: 15px 0px 0px 15px;
+    height: 65px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 179px;
+}
+
+.start-screen .text-wrapper-8 {
+    color: #ffffff;
+    font-family: "Outfit-Bold", Helvetica;
+    font-size: 22px;
+    font-weight: 700;
+    left: 56px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 14px;
+}
+
+.start-screen .text-wrapper-9 {
+    color: #202322;
+    display: block;
+    font-family: "Outfit-SemiBold", Helvetica;
+    font-size: 22px;
+    font-weight: 600;
+    left: 219px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 14px;
+}
+
+.start-screen .group-4 {
+    height: 363px;
+    left: 44px;
+    position: absolute;
+    top: 137px;
+    width: 354px;
+}
+
+.sign-up {
+    background-color: #2db6a3;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.sign-up .div-3 {
+    background-color: #2db6a3;
+    height: 885px;
+    position: relative;
+    width: 439px;
+}
+
+.sign-up .overlap {
+    height: 425px;
+    left: 32px;
+    position: absolute;
+    top: 110px;
+    width: 374px;
+}
+
+.sign-up .group-2 {
+    height: 363px;
+    left: 10px;
+    position: absolute;
+    top: 0;
+    width: 354px;
+}
+
+.sign-up .rectangle-2 {
+    background-color: #f3f3f3;
+    border-radius: 20px;
+    box-shadow: 0px 2px 1px #0000001f;
+    height: 70px;
+    left: 0;
+    position: absolute;
+    top: 355px;
+    width: 374px;
+}
+
+.sign-up .text-wrapper-3 {
+    color: #666161;
+    font-family: "Poppins", Helvetica;
+    font-size: 25px;
+    font-weight: 400;
+    left: 70px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 370px;
+    width: 153px;
+}
+
+.sign-up .vector-2 {
+    height: 29px;
+    left: 28px;
+    position: absolute;
+    top: 375px;
+    width: 29px;
+}
+
+.sign-up .ios-status-bar-black-2 {
+    height: 49px;
+    left: 0;
+    position: absolute;
+    top: 11px;
+    width: 428px;
+}
+
+.sign-up .right-side-2 {
+    height: 11px;
+    left: 347px;
+    position: absolute;
+    top: 17px;
+    width: 67px;
+}
+
+.sign-up .battery-2 {
+    height: 11px;
+    left: 42px;
+    position: absolute;
+    top: 0;
+    width: 24px;
+}
+
+.sign-up .wifi-2 {
+    height: 11px;
+    left: 22px;
+    position: absolute;
+    top: 0;
+    width: 15px;
+}
+
+.sign-up .mobile-signal-2 {
+    height: 11px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 17px;
+}
+
+.sign-up .left-side-2 {
+    height: 11px;
+    left: 33px;
+    position: absolute;
+    top: 17px;
+    width: 28px;
+}
+
+.sign-up .group-3 {
+    height: 68px;
+    left: 58px;
+    position: absolute;
+    top: 799px;
+    width: 329px;
+}
+
+.sign-up .overlap-group-2 {
+    background-color: #f3f3f3;
+    border-radius: 20px;
+    box-shadow: 0px 2px 1px #0000001f;
+    height: 70px;
+    left: 32px;
+    position: absolute;
+    top: 547px;
+    width: 374px;
+}
+
+.sign-up .text-wrapper-4 {
+    color: #666161;
+    font-family: "Poppins", Helvetica;
+    font-size: 25px;
+    font-weight: 400;
+    left: 70px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 17px;
+    width: 153px;
+}
+
+.sign-up .vector-3 {
+    height: 29px;
+    left: 28px;
+    position: absolute;
+    top: 18px;
+    width: 29px;
+}
+
+.sign-up .overlap-2 {
+    background-color: #f3f3f3;
+    border-radius: 20px;
+    box-shadow: 0px 2px 1px #0000001f;
+    height: 70px;
+    left: 32px;
+    position: absolute;
+    top: 629px;
+    width: 374px;
+}
+
+.sign-up .text-wrapper-5 {
+    color: #666161;
+    font-family: "Poppins", Helvetica;
+    font-size: 25px;
+    font-weight: 400;
+    left: 77px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 13px;
+    width: 140px;
+}
+
+.sign-up .vector-4 {
+    height: 33px;
+    left: 25px;
+    position: absolute;
+    top: 17px;
+    width: 35px;
+}
+
+.sign-up .overlap-3 {
+    background-color: #f3f3f3;
+    border-radius: 20px;
+    box-shadow: 0px 2px 1px #0000001f;
+    height: 70px;
+    left: 32px;
+    position: absolute;
+    top: 710px;
+    width: 374px;
+}
+
+.sign-up .vector-5 {
+    height: 31px;
+    left: 28px;
+    position: absolute;
+    top: 20px;
+    width: 28px;
+}
+
+.sign-up .text-wrapper-6 {
+    color: #666161;
+    font-family: "Poppins", Helvetica;
+    font-size: 25px;
+    font-weight: 400;
+    left: 76px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 16px;
+    width: 142px;
 }
