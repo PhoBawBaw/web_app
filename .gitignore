@@ -181,3 +181,5 @@ next-env.d.ts
 backend/record
 backend/audio
 backend/stream
+backend/server
+backend/server.cc

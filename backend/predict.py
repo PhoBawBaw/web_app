@@ -8,7 +8,6 @@ def get_latest_files(directory):
     files = [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".wav")]
     if not files:
         return []
-    # 최신 파일 기준으로 정렬
     files.sort(key=os.path.getctime, reverse=True)
     return files
 
@@ -31,7 +30,7 @@ async def watch_directory_and_upload(directory, interval=8):
     while True:
         latest_files = get_latest_files(directory)
         if len(latest_files) >= 2:
-            second_latest_file = latest_files[1]  # 두 번째 최신 파일 선택
+            second_latest_file = latest_files[1]
             await upload_file_to_api(second_latest_file)
         else:
             print("No enough files found.")
