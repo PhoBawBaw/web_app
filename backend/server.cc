@@ -6,7 +6,7 @@
 
 // ffmpeg 실행 함수
 void run_ffmpeg() {
-    std::system("ffmpeg -i rtsp://<ip address>:18554/test "
+    std::system("ffmpeg -i rtsp://124.216.83.13:18554/test "
                 "-vn -acodec pcm_s16le -ar 44100 -ac 2 -f segment -segment_time 5 -reset_timestamps 1 "
                 "-strftime 1 \"/app/audio/audio_%Y-%m-%d_%H-%M-%S.wav\" "
                 "-c:v copy -c:a copy "
