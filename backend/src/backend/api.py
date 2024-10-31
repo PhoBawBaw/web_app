@@ -26,8 +26,9 @@ from django.http import JsonResponse
 User = get_user_model()
 
 
-HLS_OUTPUT_PATH = '/app/stream'
-HLS_STORE_OUTPUT_PATH = '/app/record'
+HLS_OUTPUT_PATH = '/baby/stream'
+HLS_STORE_OUTPUT_PATH = '/baby/record'
+ADI_STORE_OUTPUT_PATH = '/baby/audio'
 
 class UserViewSet(
     mixins.CreateModelMixin,
@@ -190,9 +191,17 @@ class UserViewSet(
     def stream_store(self, request, *args, **kwargs):
         try:
             videos = [f for f in os.listdir(HLS_STORE_OUTPUT_PATH) if f.endswith('.mp4')]
-            print(videos)
             video_urls = [request.build_absolute_uri(f'{settings.RECORD_URL}{video}') for video in videos]
-            print(video_urls)
             return JsonResponse({"videos": video_urls}, status=200)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+        
+    @action(detail=False, methods=["get"], url_path='audio-store')
+    def audio_store(self, request, *args, **kwargs):
+        try:
+            audios = [f for f in os.listdir(ADI_STORE_OUTPUT_PATH) if f.endswith('.wav')]
+            audio_urls = [request.build_absolute_uri(f'{settings.AUDIO_URL}{audio}') for audio in audios]
+            return JsonResponse({"audios": audio_urls}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    

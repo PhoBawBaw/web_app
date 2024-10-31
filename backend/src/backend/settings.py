@@ -29,7 +29,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'stream') 
 
 RECORD_URL = '/record/'
-RECORD_ROOT = '/app/record'
+RECORD_ROOT = '/baby/record'
+
+AUDIO_URL = '/audio/'
+AUDIO_ROOT = '/baby/audio'
 ######################################################################
 # Apps
 ######################################################################

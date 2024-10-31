@@ -3,9 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { signIn, signOut } from 'next-auth/react'
-import useSensorData from '../hooks/useSensorData'
-import useVideos from '../hooks/useVideos'
-import useAlert from '../hooks/useAlert'
+import useAudio from '@/hooks/useAudio';
 
 const SignOutLink: React.FC = () => {
     return (
@@ -21,11 +19,17 @@ const SignOutLink: React.FC = () => {
 
 const UserSession: React.FC = () => {
     const { data: session, status } = useSession()
-
+    const audios = useAudio() || [];
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+    const [currentAudio, setCurrentAudio] = useState<string | null>(null);
+    const handleAudioClick = (audioUrl: string) => {
+        setCurrentAudio(audioUrl);
+        setCurrentAudio(audioUrl);
+    };
+
     return (
 
         <div className="relative">
@@ -39,6 +43,8 @@ const UserSession: React.FC = () => {
                         <h1 className="text-2xl font-semibold text-white">Welcome</h1>
                         <p className="text-sm text-[#EDE9E9]">당신의 자녀를 실시간으로 모니터링하세요!</p>
                     </div>
+
+
                     {/* Right side (Menu icon) */}
                     <div>
                         <button onClick={toggleSidebar} className="text-white">
@@ -122,6 +128,39 @@ const UserSession: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <div className="flex flex-col items-center">
+                <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-full max-w-lg">
+                    <h2 className="text-lg font-bold mb-4">오디오 파일 리스트</h2>
+
+                    {/* Audio Player (hidden when not playing) */}
+                    {currentAudio && (
+                        <audio
+                            key={currentAudio} // Ensures the audio player re-renders on URL change
+                            src={currentAudio}
+                            autoPlay
+                            controls
+                            className="mt-4 w-full max-w-lg"
+                        />
+                    )}
+
+                    {/* Scrollable Audio List */}
+                    <div className="bg-white p-4 rounded-lg shadow overflow-y-auto" style={{ maxHeight: '300px' }}>
+                        {audios.map((audioUrl, index) => {
+                            const audioName = audioUrl.split('/').pop();
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleAudioClick(audioUrl)}
+                                    className="cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out"
+                                >
+                                    {audioName}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     )

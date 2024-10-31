@@ -18,7 +18,7 @@ main {
 
 
 
-video::-webkit-media-controls-play-button {
+/* video::-webkit-media-controls-play-button {
     display: none !important;
 }
 
@@ -32,8 +32,8 @@ video::-webkit-media-controls-current-time-display {
 
 video::-webkit-media-controls-time-remaining-display {
     display: none !important;
-}
-
+} */
+/* 
 .show-controls::-webkit-media-controls-play-button {
     display: block !important;
 }
@@ -48,7 +48,7 @@ video::-webkit-media-controls-time-remaining-display {
 
 .show-controls::-webkit-media-controls-time-remaining-display {
     display: block !important;
-}
+} */
 
 form {
     margin: auto;

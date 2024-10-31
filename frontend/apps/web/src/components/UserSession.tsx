@@ -37,31 +37,38 @@ const UserSession: React.FC = () => {
 
   useEffect(() => {
     if (status === 'authenticated' && videoRef.current) {
-      const video = videoRef.current
+      const video = videoRef.current;
 
       if (Hls.isSupported()) {
-        const hls = new Hls()
-        hls.loadSource('http://<ip address>:58000/api/users/stream/stream.m3u8')
-        hls.attachMedia(video)
+        const hls = new Hls();
+        hls.loadSource('http://<ip address>:58000/api/users/stream/stream.m3u8');
+        hls.attachMedia(video);
 
-        let movedToLastSegment = false
+        let movedToLastSegment = false;
 
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play()
+          video.play();
 
-          if (!movedToLastSegment) {
-            movedToLastSegment = true
-          }
-        })
+          // Listen for FRAG_LOADED to move to the last segment only once
+          hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+            if (!movedToLastSegment) {
+              const duration = video.duration;
+              if (duration) {
+                video.currentTime = duration;
+                movedToLastSegment = true;
+              }
+            }
+          });
+        });
 
         hls.on(Hls.Events.ERROR, (event, data) => {
-          console.error('HLS error:', data)
-        })
+          console.error('HLS error:', data);
+        });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = 'http://<ip address>:58000/api/users/stream/stream.m3u8'
+        video.src = 'http://<ip address>:58000/api/users/stream/stream.m3u8';
         video.addEventListener('loadedmetadata', () => {
-          video.play()
-        })
+          video.play();
+        });
       }
     }
   }, [status])
@@ -158,7 +165,7 @@ const UserSession: React.FC = () => {
               </li>
               {/* {showVideoList && <VideoList />} */}
               <li>
-                <a href="/sleep-pattern" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                <a href="/model-improvement" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                   {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
                     <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
                   </svg> */}
@@ -167,7 +174,7 @@ const UserSession: React.FC = () => {
                     alt="Baby sleep"
                     src="https://c.animaapp.com/Sti7WLph/img/baby-sleep-2@2x.png"
                   />
-                  <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">수면 패턴</span>
+                  <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">모델 개선</span>
                 </a>
               </li>
 

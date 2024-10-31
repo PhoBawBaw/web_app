@@ -30,3 +30,4 @@ urlpatterns = [
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.RECORD_URL, document_root=settings.RECORD_ROOT)
+    urlpatterns += static(settings.AUDIO_URL, document_root=settings.AUDIO_ROOT)
