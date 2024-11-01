@@ -8,7 +8,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Phobawbaw'
+  title: 'PhoBawBaw'
 }
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {

@@ -13,7 +13,15 @@ class UserCurrentSerializer(serializers.ModelSerializer):
         model = User
         fields = ["username", "first_name", "last_name"]
 
-
+class ModelImproveSerializer(serializers.Serializer):
+    audio_file = serializers.CharField(
+        style={"input_type": "text"},  # You can adjust the input_type as needed
+        required=False
+    )
+    classification = serializers.CharField(
+        style={"input_type": "text"},
+        required=False
+    )
 class UserCurrentErrorSerializer(serializers.Serializer):
     username = serializers.ListSerializer(child=serializers.CharField(), required=False)
     first_name = serializers.ListSerializer(
@@ -22,7 +30,6 @@ class UserCurrentErrorSerializer(serializers.Serializer):
     last_name = serializers.ListSerializer(
         child=serializers.CharField(), required=False
     )
-
 
 class UserChangePasswordSerializer(serializers.ModelSerializer):
     password = serializers.CharField(style={"input_type": "password"}, write_only=True)

@@ -19,6 +19,7 @@ from .serializers import (
     UserCreateSerializer,
     UserCurrentErrorSerializer,
     UserCurrentSerializer,
+    ModelImproveSerializer,
 )
 from django.http import JsonResponse
 
@@ -56,6 +57,8 @@ class UserViewSet(
             return UserCurrentSerializer
         elif self.action == "change_password":
             return UserChangePasswordSerializer
+        elif self.action == "model_improve":
+            return ModelImproveSerializer
 
         return super().get_serializer_class()
 
@@ -204,4 +207,16 @@ class UserViewSet(
             return JsonResponse({"audios": audio_urls}, status=200)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
-    
+        
+    @action(["post"], url_path='model-improve', detail=False)
+    def model_improve(self, request, *args, **kwargs):
+        serializer = ModelImproveSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Access validated data
+            data = serializer.validated_data
+            audio_file = data.get('audio_file')
+            classification = data.get('classification')
+            print(audio_file, classification)
+            
+            return Response({"message": "모델 개선이 완료되었습니다!"}, status=status.HTTP_200_OK)

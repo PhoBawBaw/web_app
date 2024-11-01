@@ -1,9 +1,10 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
-import { useEffect, useRef, useState } from 'react'
-import { signIn, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react';
+import { useEffect, useRef, useState } from 'react';
+import { signIn, signOut } from 'next-auth/react';
 import useAudio from '@/hooks/useAudio';
+import useSubmitClassification from '@/hooks/useImprove';
 
 const SignOutLink: React.FC = () => {
     return (
@@ -13,25 +14,40 @@ const SignOutLink: React.FC = () => {
         >
             로그아웃
         </span>
-    )
-}
-
-
+    );
+};
 const UserSession: React.FC = () => {
-    const { data: session, status } = useSession()
+    const { data: session, status } = useSession();
     const audios = useAudio() || [];
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
-    const [currentAudio, setCurrentAudio] = useState<string | null>(null);
-    const handleAudioClick = (audioUrl: string) => {
-        setCurrentAudio(audioUrl);
-        setCurrentAudio(audioUrl);
+    const { submitClassification, isSubmitting, error } = useSubmitClassification();
+
+    // State to track the selected classification for each audio
+    const [classifications, setClassifications] = useState<{ [key: string]: string }>({});
+
+    // Handle classification selection for each audio
+    const handleClassificationChange = (audioName: string, classification: string) => {
+        setClassifications((prev) => ({
+            ...prev,
+            [audioName]: classification
+        }));
+    };
+
+    // Submit classification for a specific audio
+    const handleSubmit = async (audioName: string) => {
+        const classification = classifications[audioName];
+        if (!classification) {
+            alert("먼저 아기 상태를 선택해주세요!");
+            return;
+        }
+
+        await submitClassification(audioName, classification);
     };
 
     return (
-
         <div className="relative">
             <div className="flex flex-col  mb-2">
                 <div className="flex justify-between items-center p-4 mb-2">
@@ -43,8 +59,6 @@ const UserSession: React.FC = () => {
                         <h1 className="text-2xl font-semibold text-white">Welcome</h1>
                         <p className="text-sm text-[#EDE9E9]">당신의 자녀를 실시간으로 모니터링하세요!</p>
                     </div>
-
-
                     {/* Right side (Menu icon) */}
                     <div>
                         <button onClick={toggleSidebar} className="text-white">
@@ -76,8 +90,6 @@ const UserSession: React.FC = () => {
                         <div className="flex items-center space-x-3 ">
                             {/* Avatar */}
                             <div className="flex items-center justify-center w-10 h-10 bg-teal-100 rounded-full">
-                                {/* This is a placeholder icon. Replace with an actual image or SVG if needed */}
-                                {/* <span className="text-xl">👔</span> */}
                                 <img
                                     className="w-6 h-6 top-6 left-0.5 object-cover"
                                     alt="Free icon bussiness"
@@ -98,9 +110,7 @@ const UserSession: React.FC = () => {
                             <li className="mb-2"></li>
                             <li>
                                 <a href="/" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
-                  </svg> */}
+
                                     <svg className="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"> <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" /> </svg>
                                     <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">Home</span>
                                 </a>
@@ -132,39 +142,64 @@ const UserSession: React.FC = () => {
                 <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-full max-w-lg">
                     <h2 className="text-lg font-bold mb-4">오디오 파일 리스트</h2>
 
-                    {/* Audio Player (hidden when not playing) */}
-                    {currentAudio && (
-                        <audio
-                            key={currentAudio} // Ensures the audio player re-renders on URL change
-                            src={currentAudio}
-                            autoPlay
-                            controls
-                            className="mt-4 w-full max-w-lg"
-                        />
-                    )}
-
-                    {/* Scrollable Audio List */}
-                    <div className="bg-white p-4 rounded-lg shadow overflow-y-auto" style={{ maxHeight: '300px' }}>
+                    {/* Audio List with Individual Classification */}
+                    <div className="bg-white p-4 rounded-lg shadow overflow-y-auto" style={{ maxHeight: '400px' }}>
                         {audios.map((audioUrl, index) => {
                             const audioName = audioUrl.split('/').pop();
+                            const selectedClassification = classifications[audioName] || "";
+
                             return (
-                                <div
-                                    key={index}
-                                    onClick={() => handleAudioClick(audioUrl)}
-                                    className="cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out"
-                                >
-                                    {audioName}
+                                <div key={index} className="p-2 mb-4 border-b border-gray-200">
+                                    <div
+                                        onClick={() => setCurrentAudio(audioUrl)}
+                                        className="cursor-pointer text-blue-500 hover:underline"
+                                    >
+                                        {audioName}
+                                    </div>
+
+                                    {/* Classification Dropdown */}
+                                    <div className="mt-2">
+                                        <label htmlFor={`classification-${index}`} className="block text-sm font-medium text-gray-700">
+                                            분류명
+                                        </label>
+                                        <select
+                                            id={`classification-${index}`}
+                                            name={`classification-${index}`}
+                                            value={selectedClassification}
+                                            onChange={(e) => handleClassificationChange(audioName, e.target.value)}
+                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                        >
+                                            <option value="" disabled>아기의 상태를 선택해주세요</option>
+                                            <option value="Hungry">Hungry</option>
+                                            <option value="Burping">Burping</option>
+                                            <option value="Belly pain">Belly pain</option>
+                                            <option value="Discomfort">Discomfort</option>
+                                            <option value="Tired">Tired</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Submit Button */}
+                                    <div className="mt-2">
+                                        <button
+                                            onClick={() => handleSubmit(audioName)}
+                                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? "제출 중..." : "적용"}
+                                        </button>
+                                    </div>
+
+                                    {/* Error Message */}
+                                    {error && <p className="text-red-500 mt-2">{error}</p>}
                                 </div>
                             );
                         })}
                     </div>
                 </div>
             </div>
-
         </div>
+    );
+};
 
-    )
-}
-
-
-export default UserSession
+export default UserSession;
