@@ -1,0 +1,162 @@
+'use client'
+
+import { useSession } from 'next-auth/react'
+import { redirect } from "next/navigation";
+import { useEffect, useRef, useState } from 'react'
+// import { getServerSession } from 'next-auth'
+import { signIn, signOut } from 'next-auth/react'
+
+const SignOutLink: React.FC = () => {
+    return (
+        <span
+            onClick={() => signOut()}
+            className="text-gray-700 font-semibold cursor-pointer hover:text-black transition duration-300 ease-in-out"
+        >
+            로그아웃
+        </span>
+    )
+}
+const MoveListPage: React.FC = () => {
+    const { data: session, status } = useSession()
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [moveData, setMoveData] = useState([]);
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    if (session === null) {
+        return redirect("/");
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://<ip address>:58000/api/users/moving-store/');
+                const data = await response.json();
+                setMoveData(data);
+            } catch (error) {
+                console.error('Error fetching move data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    return (
+
+        <div className="relative">
+            <div className="flex flex-col  mb-2">
+                <div className="flex justify-between items-center p-4 mb-2">
+                    {/* Left side (Monitoring text) */}
+                    <div
+                        className="text-left cursor-pointer"
+                        onClick={() => (window.location.href = '/')}
+                    >
+                        <h1 className="text-2xl font-semibold text-white">Welcome</h1>
+                        <p className="text-sm text-[#EDE9E9]">당신의 자녀를 실시간으로 모니터링하세요!</p>
+                    </div>
+                    {/* Right side (Menu icon) */}
+                    <div>
+                        <button onClick={toggleSidebar} className="text-white">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 6h16M4 12h16M4 18h16"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div
+                    className={`fixed top-0 right-0 h-full bg-white w-64 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
+                        } transition-transform duration-300 ease-in-out`}
+                    style={{ zIndex: 10 }}
+                >
+                    <div className="p-4">
+                        <br></br>
+                        <br></br>
+                        <div className="flex items-center space-x-3 ">
+                            {/* Avatar */}
+                            <div className="flex items-center justify-center w-10 h-10 bg-teal-100 rounded-full">
+                                {/* This is a placeholder icon. Replace with an actual image or SVG if needed */}
+                                {/* <span className="text-xl">👔</span> */}
+                                <img
+                                    className="w-6 h-6 top-6 left-0.5 object-cover"
+                                    alt="Free icon bussiness"
+                                    src="https://c.animaapp.com/Sti7WLph/img/free-icon-bussiness-man-3048116-1@2x.png"
+                                />
+                            </div>
+
+                            {/* Name and Email */}
+                            <div>
+                                <div className="text-lg font-semibold text-gray-800">데모 사용자</div>
+                                <div className="text-sm text-gray-500">demo@phobawbaw.com</div>
+                            </div>
+                        </div>
+                        <br></br>
+                        <br></br>
+                        {/* <h2 className="text-lg font-semibold">Sidebar Menu</h2> */}
+                        <ul className="mt-4">
+                            <li className="mb-2"></li>
+                            <li>
+                                <a href="/" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
+                  </svg> */}
+                                    <svg className="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"> <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" /> </svg>
+                                    <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">Home</span>
+                                </a>
+                            </li>
+                            {/* {showVideoList && <VideoList />} */}
+
+                            <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                                <li>
+                                    <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                        <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
+                                        </svg>
+                                        {status === 'authenticated' && (
+                                            <span className="flex-1 ms-3 whitespace-nowrap"><SignOutLink /></span>
+                                        )}
+                                    </a>
+                                </li>
+                            </ul>
+                        </ul>
+
+                        <button onClick={toggleSidebar} data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
+                            <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <span className="sr-only">Close menu</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <h2 className="text-xl font-semibold mb-4 text-center">움직임 상태 리스트</h2>
+            <div className="p-4 bg-white rounded shadow-lg mt-4 h-96 overflow-y-scroll">
+
+                {moveData.length > 0 ? (
+                    <ul>
+                        {moveData.map((item, index) => (
+                            <li key={index} className="mb-2 border-b pb-2">
+                                <span className="font-semibold">날짜: </span> {item.datetime} <br />
+                                <span className="font-semibold">움직임 상태: </span> {item.status}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>움직임 데이터가 존재하지 않습니다.</p>
+                )}
+            </div>
+        </div>
+
+    );
+};
+
+export default MoveListPage;

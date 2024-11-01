@@ -177,6 +177,18 @@ const UserSession: React.FC = () => {
                   <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">모델 개선</span>
                 </a>
               </li>
+              <li>
+                <a href="/move-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                  </svg> */}
+                  <svg class="w-6 h-6 text-gray-800 gray:text-gray" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
+                  </svg>
+
+                  <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">움직임 상태 기록</span>
+                </a>
+              </li>
 
               <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
                 <li>
@@ -236,14 +248,24 @@ const UserSession: React.FC = () => {
       <div className="grid grid-cols-2 gap-4 mt-4">
         <div className="flex flex-col items-center justify-center bg-purple-100 p-4 rounded-lg shadow-lg">
           <h3 className="text-md font-semibold text-purple-600">아기 상태</h3>
-          <p className="text-3xl font-bold text-gray-900" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)' }}>{state === 'Don’t_know' ? 'Idle' : state || 'Loading...'}</p>
+          <p className="text-3xl font-bold text-gray-900" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)' }}>{state === "don't_know" ? 'idle' : state || 'Loading...'}</p>
         </div>
         <div className="flex flex-col items-center justify-center bg-green-100 p-4 rounded-lg shadow-lg">
           <h3 className="text-md font-semibold text-green-600">움직임 상태</h3>
           <p className="text-3xl font-bold text-gray-900" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.5rem)' }}>{move_state || 'Loading...'}</p>
         </div>
       </div>
-
+      {(move_state === 'moving' || state !== "don't_know") && (
+        <div
+          className="alert alert-warning fixed bottom-4 left-4 p-4 rounded-lg bg-red-100 text-red-700 shadow-lg"
+          style={{ maxWidth: '250px' }}
+        >
+          <strong>경고: </strong>
+          {move_state === 'moving'
+            ? '아기가 움직이고 있습니다!'
+            : `아기 상태가 "${state}" 상태입니다. 확인이 필요합니다!`}
+        </div>
+      )}
 
       {isModalOpen && selectedVideo && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">

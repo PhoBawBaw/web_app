@@ -153,6 +153,13 @@ class UserViewSet(
                 'error': 'Could not retrieve sensor data'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
+    @action(detail=False, methods=["get"], url_path="moving-store")
+    def moving_store(self, request, *args, **kwargs):
+        recent_data = MovingStatusData.objects.order_by('-datetime')[:100]
+        data = [{"datetime": item.datetime, "status": item.state} for item in recent_data]
+        return JsonResponse(data, safe=False)
+        
+            
     @action(detail=False, methods=["get"], url_path="temperature-humidity")
     def temperature_humidity(self, request, *args, **kwargs):
         latest_data = EnvironmentData.objects.order_by('-datetime').first()
