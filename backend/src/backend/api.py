@@ -168,9 +168,9 @@ class UserViewSet(
             
     @action(detail=False, methods=["get"], url_path="moving-store")
     def moving_store(self, request, *args, **kwargs):
-        recent_data = MovingStatusData.objects.order_by('-datetime')[:100]
+        recent_data = MovingStatusData.objects.filter(~Q(state='none')).order_by('-datetime')
         data = [{"datetime": item.datetime, "status": item.state} for item in recent_data]
-        return JsonResponse(data, safe=False)   
+        return JsonResponse(data, safe=False)     
             
     @action(detail=False, methods=["get"], url_path="temperature-humidity")
     def temperature_humidity(self, request, *args, **kwargs):
