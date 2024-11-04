@@ -24,7 +24,8 @@ const UserSession: React.FC = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
     const { submitClassification, isSubmitting, error } = useSubmitClassification();
-
+    // const [modelMessage, setModelMessage] = useState("");
+    const [isFetchingMessage, setIsFetchingMessage] = useState(false);
     const [classifications, setClassifications] = useState<{ [key: string]: string }>({});
     const [currentAudio, setCurrentAudio] = useState<string | null>(null); // State for current audio
     const audioPlayerRef = useRef<HTMLAudioElement>(null); // Ref for the audio player
@@ -52,6 +53,21 @@ const UserSession: React.FC = () => {
         if (audioPlayerRef.current) {
             audioPlayerRef.current.src = audioUrl;
             audioPlayerRef.current.play();
+        }
+    };
+    const fetchModelMessage = async () => {
+        setIsFetchingMessage(true);
+        try {
+            const response = await fetch('http://<ip address>:58000/api/users/model-continual/');
+            const data = await response.json();
+            alert(data.message);
+            // setModelMessage(data.message);
+        } catch (error) {
+            console.error("Error fetching model message:", error);
+            alert("오류가 발생했습니다. 다시 시도해주세요.");
+            // setModelMessage("오류가 발생했습니다. 다시 시도해주세요.");
+        } finally {
+            setIsFetchingMessage(false);
         }
     };
 
@@ -134,12 +150,6 @@ const UserSession: React.FC = () => {
                             </li>
                             <li>
                                 <a href="/state-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
-                  </svg> */}
-                                    {/* <svg class="w-6 h-6 text-gray-800 gray:text-gray" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
-                  </svg> */}
                                     <img
                                         className="w-[20px] h-[25px] top-[9px] left-[18px] object-cover"
                                         alt="Baby"
@@ -151,9 +161,6 @@ const UserSession: React.FC = () => {
                             </li>
                             <li>
                                 <a href="/move-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
-                  </svg> */}
                                     <img
                                         className="w-[20px] h-[25px] top-[9px] left-[18px] object-cover"
                                         alt="Baby"
@@ -212,12 +219,12 @@ const UserSession: React.FC = () => {
                                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                         >
                                             <option value="" disabled>아기의 상태를 선택해주세요</option>
-                                            <option value="Hungry">배고픔</option>
-                                            <option value="Burping">트림</option>
-                                            <option value="Belly pain">복통</option>
-                                            <option value="Discomfort">불편함</option>
-                                            <option value="Tired">피곤함</option>
-                                            <option value="Other">기타</option>
+                                            <option value="hungry">배고픔</option>
+                                            <option value="burping">트림</option>
+                                            <option value="belly_pain">복통</option>
+                                            <option value="discomfort">불편함</option>
+                                            <option value="tired">피곤함</option>
+                                            <option value="don't_know">기타</option>
                                         </select>
                                     </div>
 
@@ -238,6 +245,18 @@ const UserSession: React.FC = () => {
                             );
                         })}
                     </div>
+                    <div className="mt-2">
+                        <button
+                            onClick={fetchModelMessage}
+                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
+                            disabled={isFetchingMessage}
+                        >
+                            {isFetchingMessage ? "메시지 로딩 중..." : "모델 개선 상태 확인"}
+                        </button>
+                    </div>
+
+                    {/* Display the fetched message */}
+                    {/* {modelMessage && <p className="text-blue-500 mt-2">{modelMessage}</p>} */}
                 </div>
             </div>
         </div>

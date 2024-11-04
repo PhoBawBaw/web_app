@@ -55,3 +55,17 @@ class MovingStatusData(models.Model):
 
     def __str__(self):
         return f"Datetime: {self.datetime}, Crying: {self.state}"
+    
+class ContinualStateData(models.Model):
+    audio = models.CharField(_("audio"), primary_key=False)  
+    label = models.CharField(_("label"), primary_key=False) 
+
+    class Meta:
+        db_table = "continual"
+        managed = False
+        verbose_name = _("Continual Learning Data")
+        verbose_name_plural = _("Continual Learning Data")
+        unique_together = ('audio', 'label') 
+
+    def __str__(self):
+        return f"audio: {self.audio}, label: {self.label}"

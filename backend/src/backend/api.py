@@ -4,6 +4,9 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from django.db import connection
+from django.db.models import Q 
+import requests
 
 from django.http import StreamingHttpResponse, FileResponse, HttpResponse
 import time
@@ -11,7 +14,7 @@ import os
 from rest_framework.views import APIView
 from django.http import HttpResponse, FileResponse
 from django.conf import settings
-from .models import EnvironmentData, StatusData, MovingStatusData
+from .models import EnvironmentData, StatusData, MovingStatusData, ContinualStateData
 from .serializers import (
     UserChangePasswordErrorSerializer,
     UserChangePasswordSerializer,
@@ -37,7 +40,6 @@ class UserViewSet(
 ):
     queryset = User.objects.all()
     serializer_class = UserCurrentSerializer
-    # permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -136,9 +138,14 @@ class UserViewSet(
                 'error': 'Could not retrieve sensor data'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
+    # @action(detail=False, methods=["get"], url_path="state-store")
+    # def state_store(self, request, *args, **kwargs):
+    #     recent_data = StatusData.objects.order_by('-datetime')[:100]
+    #     data = [{"datetime": item.datetime, "status": item.crying} for item in recent_data]
+    #     return JsonResponse(data, safe=False)
     @action(detail=False, methods=["get"], url_path="state-store")
     def state_store(self, request, *args, **kwargs):
-        recent_data = StatusData.objects.order_by('-datetime')[:100]
+        recent_data = StatusData.objects.filter(~Q(crying='don\'t_know')).order_by('-datetime')
         data = [{"datetime": item.datetime, "status": item.crying} for item in recent_data]
         return JsonResponse(data, safe=False)
             
@@ -163,8 +170,7 @@ class UserViewSet(
     def moving_store(self, request, *args, **kwargs):
         recent_data = MovingStatusData.objects.order_by('-datetime')[:100]
         data = [{"datetime": item.datetime, "status": item.state} for item in recent_data]
-        return JsonResponse(data, safe=False)
-        
+        return JsonResponse(data, safe=False)   
             
     @action(detail=False, methods=["get"], url_path="temperature-humidity")
     def temperature_humidity(self, request, *args, **kwargs):
@@ -231,5 +237,33 @@ class UserViewSet(
             audio_file = data.get('audio_file')
             classification = data.get('classification')
             print(audio_file, classification)
+           
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO continual (audio, label) VALUES (%s, %s)",
+                    [audio_file, classification]
+                )
             
-            return Response({"message": "모델 개선이 완료되었습니다!"}, status=status.HTTP_200_OK)
+            return Response({"message": "데이터 저장이 완료되었습니다!"}, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(["get"], url_path='model-continual', detail=False)
+    def model_continual(self, request, *args, **kwargs):
+        queryset = ContinualStateData.objects.all()
+        count = queryset.count()
+
+        if count < 20:
+            return Response({"message": "데이터가 적어 모델 개선이 불가능합니다. 더 많은 데이터가 필요합니다."})
+    
+        try:
+            external_response = requests.post('http://<ip address>:51213/continual_learning/')
+            # external_response.raise_for_status() 
+            # external_data = external_response.json()  
+            return Response({
+                "message": "모델 개선이 완료되었습니다!",
+                # "data": external_data
+            })
+            
+        except requests.RequestException as e:
+            return Response({"message": "모델 개선 중 오류가 발생했습니다.", "error": str(e)}, status=500)

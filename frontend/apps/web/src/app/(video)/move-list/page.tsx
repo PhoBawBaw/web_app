@@ -3,7 +3,6 @@
 import { useSession } from 'next-auth/react'
 import { redirect } from "next/navigation";
 import { useEffect, useRef, useState } from 'react'
-// import { getServerSession } from 'next-auth'
 import { signIn, signOut } from 'next-auth/react'
 
 const SignOutLink: React.FC = () => {

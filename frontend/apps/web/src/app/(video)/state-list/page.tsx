@@ -19,7 +19,6 @@ const SignOutLink: React.FC = () => {
 const MoveListPage: React.FC = () => {
     const { data: session, status } = useSession();
 
-    // const { data: session } = useSession();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const moveData = useMoveData();
 
