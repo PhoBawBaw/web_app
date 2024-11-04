@@ -83,8 +83,8 @@ const VideoListPage: React.FC = () => {
                         className="text-left cursor-pointer"
                         onClick={() => (window.location.href = '/')}
                     >
-                        <h1 className="text-2xl font-semibold text-white">Welcome</h1>
-                        <p className="text-sm text-[#EDE9E9]">당신의 자녀를 실시간으로 모니터링하세요!</p>
+                        <h1 className="text-2xl font-semibold text-white">녹화 영상 목록</h1>
+                        <p className="text-sm text-[#EDE9E9]">자녀의 녹화된 영상을 확인하세요!</p>
                     </div>
                     {/* Right side (Menu icon) */}
                     <div>
@@ -146,6 +146,47 @@ const VideoListPage: React.FC = () => {
                                     <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">Home</span>
                                 </a>
                             </li>
+                            <li>
+                                <a href="/model-improvement" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                  </svg> */}
+                                    <img
+                                        className="w-[26px] h-[25px] top-[9px] left-[18px] object-cover"
+                                        alt="Baby sleep"
+                                        src="https://c.animaapp.com/Sti7WLph/img/baby-sleep-2@2x.png"
+                                    />
+                                    <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">모델 개선</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/move-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                  </svg> */}
+                                    <img
+                                        className="w-[20px] h-[25px] top-[9px] left-[18px] object-cover"
+                                        alt="Baby"
+                                        src="./moving.png"
+                                    />
+
+                                    <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">움직임 상태 기록</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/state-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                  </svg> */}
+                                    <img
+                                        className="w-[20px] h-[25px] top-[9px] left-[18px] object-cover"
+                                        alt="Baby"
+                                        src="./state.png"
+                                    />
+
+                                    <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">아기 상태 기록</span>
+                                </a>
+                            </li>
                             {/* {showVideoList && <VideoList />} */}
 
                             <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
@@ -172,7 +213,7 @@ const VideoListPage: React.FC = () => {
             {/* 비디오 리스트 주석 처리 */}
 
             <div className="bg-gray-100 h-full overflow-y-auto p-4 rounded-lg shadow-lg mt-4" style={{ maxHeight: '580px' }}>
-                <h2 className="text-lg font-bold mb-4">녹화 영상 리스트</h2>
+                {/* <h2 className="text-lg font-bold mb-4">녹화 영상 리스트</h2> */}
                 <ul>
                     {videos.map((videoUrl, index) => {
                         const videoName = videoUrl.split('/').pop();

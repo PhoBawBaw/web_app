@@ -25,10 +25,10 @@ const UserSession: React.FC = () => {
     };
     const { submitClassification, isSubmitting, error } = useSubmitClassification();
 
-    // State to track the selected classification for each audio
     const [classifications, setClassifications] = useState<{ [key: string]: string }>({});
+    const [currentAudio, setCurrentAudio] = useState<string | null>(null); // State for current audio
+    const audioPlayerRef = useRef<HTMLAudioElement>(null); // Ref for the audio player
 
-    // Handle classification selection for each audio
     const handleClassificationChange = (audioName: string, classification: string) => {
         setClassifications((prev) => ({
             ...prev,
@@ -36,7 +36,6 @@ const UserSession: React.FC = () => {
         }));
     };
 
-    // Submit classification for a specific audio
     const handleSubmit = async (audioName: string) => {
         const classification = classifications[audioName];
         if (!classification) {
@@ -45,6 +44,15 @@ const UserSession: React.FC = () => {
         }
 
         await submitClassification(audioName, classification);
+    };
+
+    // Play the audio when a user selects it
+    const handleAudioClick = (audioUrl: string) => {
+        setCurrentAudio(audioUrl);
+        if (audioPlayerRef.current) {
+            audioPlayerRef.current.src = audioUrl;
+            audioPlayerRef.current.play();
+        }
     };
 
     return (
@@ -56,8 +64,8 @@ const UserSession: React.FC = () => {
                         className="text-left cursor-pointer"
                         onClick={() => (window.location.href = '/')}
                     >
-                        <h1 className="text-2xl font-semibold text-white">Welcome</h1>
-                        <p className="text-sm text-[#EDE9E9]">당신의 자녀를 실시간으로 모니터링하세요!</p>
+                        <h1 className="text-2xl font-semibold text-white">음성 녹음 목록</h1>
+                        <p className="text-sm text-[#EDE9E9]">아기의 울음소리를 분류함으로써 우리 아기에게 최적화된 모델로 개선하세요!</p>
                     </div>
                     {/* Right side (Menu icon) */}
                     <div>
@@ -105,18 +113,57 @@ const UserSession: React.FC = () => {
                         </div>
                         <br></br>
                         <br></br>
-                        {/* <h2 className="text-lg font-semibold">Sidebar Menu</h2> */}
                         <ul className="mt-4">
                             <li className="mb-2"></li>
                             <li>
                                 <a href="/" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-
                                     <svg className="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"> <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" /> </svg>
                                     <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">Home</span>
                                 </a>
                             </li>
-                            {/* {showVideoList && <VideoList />} */}
 
+                            <li>
+                                <a href="/video-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <img
+                                        className="w-[26px] h-6 top-[61px] left-[17px] object-cover"
+                                        alt="Baby"
+                                        src="https://c.animaapp.com/Sti7WLph/img/baby-1@2x.png"
+                                    />
+                                    <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">녹화 영상</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/state-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                  </svg> */}
+                                    {/* <svg class="w-6 h-6 text-gray-800 gray:text-gray" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
+                  </svg> */}
+                                    <img
+                                        className="w-[20px] h-[25px] top-[9px] left-[18px] object-cover"
+                                        alt="Baby"
+                                        src="./state.png"
+                                    />
+
+                                    <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">아기 상태 기록</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/move-list" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    {/* <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                    <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                  </svg> */}
+                                    <img
+                                        className="w-[20px] h-[25px] top-[9px] left-[18px] object-cover"
+                                        alt="Baby"
+                                        src="./moving.png"
+                                    />
+
+                                    <span className="flex-1 ms-3 whitespace-nowrap text-gray-700">움직임 상태 기록</span>
+                                </a>
+                            </li>
+                            {/* other menu items */}
                             <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
                                 <li>
                                     <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -130,17 +177,15 @@ const UserSession: React.FC = () => {
                                 </li>
                             </ul>
                         </ul>
-
-                        <button onClick={toggleSidebar} data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
-                            <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                            <span className="sr-only">Close menu</span>
-                        </button>
                     </div>
                 </div>
             </div>
             <div className="flex flex-col items-center">
                 <div className="bg-gray-100 p-6 rounded-lg shadow-lg w-full max-w-lg">
-                    <h2 className="text-lg font-bold mb-4">오디오 파일 리스트</h2>
+                    {/* Audio Player */}
+                    <audio ref={audioPlayerRef} controls className="w-full mb-4">
+                        Your browser does not support the audio element.
+                    </audio>
 
                     {/* Audio List with Individual Classification */}
                     <div className="bg-white p-4 rounded-lg shadow overflow-y-auto" style={{ maxHeight: '400px' }}>
@@ -151,7 +196,7 @@ const UserSession: React.FC = () => {
                             return (
                                 <div key={index} className="p-2 mb-4 border-b border-gray-200">
                                     <div
-                                        onClick={() => setCurrentAudio(audioUrl)}
+                                        onClick={() => handleAudioClick(audioUrl)}
                                         className="cursor-pointer text-blue-500 hover:underline"
                                     >
                                         {audioName}
@@ -159,9 +204,6 @@ const UserSession: React.FC = () => {
 
                                     {/* Classification Dropdown */}
                                     <div className="mt-2">
-                                        <label htmlFor={`classification-${index}`} className="block text-sm font-medium text-gray-700">
-                                            분류명
-                                        </label>
                                         <select
                                             id={`classification-${index}`}
                                             name={`classification-${index}`}
@@ -170,12 +212,12 @@ const UserSession: React.FC = () => {
                                             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                         >
                                             <option value="" disabled>아기의 상태를 선택해주세요</option>
-                                            <option value="Hungry">Hungry</option>
-                                            <option value="Burping">Burping</option>
-                                            <option value="Belly pain">Belly pain</option>
-                                            <option value="Discomfort">Discomfort</option>
-                                            <option value="Tired">Tired</option>
-                                            <option value="Other">Other</option>
+                                            <option value="Hungry">배고픔</option>
+                                            <option value="Burping">트림</option>
+                                            <option value="Belly pain">복통</option>
+                                            <option value="Discomfort">불편함</option>
+                                            <option value="Tired">피곤함</option>
+                                            <option value="Other">기타</option>
                                         </select>
                                     </div>
 

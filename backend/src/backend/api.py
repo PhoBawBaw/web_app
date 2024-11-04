@@ -136,6 +136,12 @@ class UserViewSet(
                 'error': 'Could not retrieve sensor data'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
+    @action(detail=False, methods=["get"], url_path="state-store")
+    def state_store(self, request, *args, **kwargs):
+        recent_data = StatusData.objects.order_by('-datetime')[:100]
+        data = [{"datetime": item.datetime, "status": item.crying} for item in recent_data]
+        return JsonResponse(data, safe=False)
+            
     @action(detail=False, methods=["get"], url_path="moving-status")
     def moving_status(self, request, *args, **kwargs):
         latest_data = MovingStatusData.objects.order_by('-datetime').first()
