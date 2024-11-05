@@ -169,4 +169,4 @@ docker compose exec web pnpm openapi:generate
 ```
 
 ## 라이센스
-  TBD
+  이 프로젝트는 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 라이센스를 따릅니다.
